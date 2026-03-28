@@ -111,6 +111,14 @@ export const products: Product[] = [
     category: 'doces',
   },
   {
+    id: 'd7',
+    name: 'Pote de Doce de Leite Puro 400g',
+    description: 'Doce de leite puro artesanal em pote de 400g. Cremoso, suave e feito com ingredientes selecionados. Perfeito para passar no pão ou usar em receitas.',
+    price: 12.60,
+    image: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=600&q=80',
+    category: 'doces',
+  },
+  {
     id: 'd6',
     name: 'Bolo de Chocolate Artesanal (fatia)',
     description: 'Fatia generosa de bolo de chocolate com recheio de ganache e cobertura de trufa. Feito fresco diariamente com ingredientes selecionados.',
