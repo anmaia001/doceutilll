@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import {
   ShoppingCart,
   MessageCircle,
@@ -971,9 +972,17 @@ export default function HomePage() {
             <p className="text-xs text-background/45">
               © {new Date().getFullYear()} Casa&Doce. Todos os direitos reservados.
             </p>
-            <p className="text-xs text-background/45">
-              Feito com ❤️ para o Rio de Janeiro
-            </p>
+            <div className="flex items-center gap-4">
+              <p className="text-xs text-background/45">
+                Feito com ❤️ para o Rio de Janeiro
+              </p>
+              <Link
+                to="/admin"
+                className="text-xs text-background/30 hover:text-background/70 transition-colors flex items-center gap-1 border border-white/10 hover:border-white/30 px-2.5 py-1 rounded-lg"
+              >
+                🔐 Admin
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
