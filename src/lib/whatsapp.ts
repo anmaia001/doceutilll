@@ -1,6 +1,6 @@
 import { CartItem } from '@/hooks/useCart';
 
-const WHATSAPP_NUMBER = '5521999999999';
+const WHATSAPP_NUMBER = '5524992575555';
 const PIX_KEY = 'casa.doce@email.com';
 const PIX_FAVORECIDO = 'Casa&Doce';
 
