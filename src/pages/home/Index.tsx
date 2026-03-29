@@ -307,114 +307,6 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════
-          PROMOÇÕES / DESTAQUES
-      ════════════════════════════════════════════ */}
-      <section id="promocoes" className="py-16">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <span className="inline-block px-4 py-1.5 bg-destructive/10 text-destructive text-sm font-bold rounded-full mb-3">
-              🔥 Promoções Imperdíveis
-            </span>
-            <h2
-              className="text-3xl sm:text-4xl font-bold text-foreground"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
-              Ofertas do Dia
-            </h2>
-            <p className="text-muted-foreground mt-2 text-sm sm:text-base">
-              Aproveite nossas promoções exclusivas. Válido por tempo limitado!
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Featured big card */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="lg:col-span-2 relative overflow-hidden rounded-3xl group cursor-pointer"
-              style={{ minHeight: '320px' }}
-              onClick={() => scrollTo('produtos')}
-            >
-              <img
-                src="https://images.unsplash.com/photo-1563197059-9a5f2aa3eb5e?w=900&q=80"
-                alt="Promoção em destaque"
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent" />
-              <div className="absolute inset-0 flex items-end p-8">
-                <div>
-                  <span className="inline-block px-3 py-1 bg-destructive text-white text-xs font-bold rounded-full mb-3">
-                    🔥 ATÉ 30% OFF
-                  </span>
-                  <h3
-                    className="text-2xl sm:text-3xl font-bold text-white mb-2"
-                    style={{ fontFamily: "'Playfair Display', serif" }}
-                  >
-                    Doces Artesanais
-                  </h3>
-                  <p className="text-white/80 text-sm mb-4">
-                    Brigadeiros, trufas e cestas especiais com preços imperdíveis
-                  </p>
-                  <span className="flex items-center gap-2 text-white font-semibold text-sm">
-                    Ver Ofertas <ChevronRight size={16} />
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Side cards */}
-            <div className="flex flex-col gap-6">
-              {[
-                {
-                  title: 'Kit Panelas Premium',
-                  desc: '5 peças antiaderentes com até 20% OFF',
-                  image: 'https://images.unsplash.com/photo-1761073899409-20fc02e4ed44?w=400&q=80',
-                  discount: '20% OFF',
-                },
-                {
-                  title: 'Cesta de Doces',
-                  desc: 'Presente perfeito para todas as ocasiões',
-                  image: 'https://images.unsplash.com/photo-1734009575299-476bc0e3bd71?w=400&q=80',
-                  discount: '🎁 Especial',
-                },
-              ].map((promo, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="relative overflow-hidden rounded-2xl group cursor-pointer flex-1"
-                  style={{ minHeight: '140px' }}
-                  onClick={() => scrollTo('produtos')}
-                >
-                  <img
-                    src={promo.image}
-                    alt={promo.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/65 to-black/20" />
-                  <div className="absolute inset-0 p-5 flex flex-col justify-end">
-                    <span className="inline-block px-2 py-0.5 bg-accent text-accent-foreground text-xs font-bold rounded-full w-fit mb-1">
-                      {promo.discount}
-                    </span>
-                    <h4 className="text-white font-bold text-sm">{promo.title}</h4>
-                    <p className="text-white/70 text-xs">{promo.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════
           PRODUTOS
       ════════════════════════════════════════════ */}
       <section id="produtos" className="py-16 bg-secondary/20">
@@ -821,7 +713,7 @@ export default function HomePage() {
                 {[
                   { label: 'Início', id: 'inicio' },
                   { label: 'Produtos', id: 'produtos' },
-                  { label: 'Promoções', id: 'promocoes' },
+                  { label: 'Produtos', id: 'produtos' },
                   { label: 'Como Comprar', id: 'como-comprar' },
                 ].map(link => (
                   <li key={link.id}>
