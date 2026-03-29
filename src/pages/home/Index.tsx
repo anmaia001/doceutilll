@@ -120,13 +120,17 @@ const heroSlides = [
     overlay: 'from-black/60 via-black/30 to-transparent',
   },
   {
-    image: 'https://images.unsplash.com/photo-1701944579022-8d1e84bc56a7?w=1600&q=85',
+    image: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=1600&q=85',
     badge: '⭐ Mais Vendidos',
     title: 'Qualidade que\nVocê Merece',
     subtitle: 'Os melhores produtos selecionados\npara o seu lar e seu paladar',
     cta: 'Comprar Agora',
     section: 'produtos',
     overlay: 'from-black/65 via-black/35 to-transparent',
+    extraImages: [
+      'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=400&q=80',
+      'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=400&q=80',
+    ],
   },
 ];
 
@@ -191,6 +195,41 @@ export default function HomePage() {
               className="w-full h-full object-cover"
             />
             <div className={`absolute inset-0 bg-gradient-to-r ${slide.overlay}`} />
+
+            {/* Imagens sobrepostas do produto */}
+            {'extraImages' in slide && slide.extraImages && (
+              <div className="absolute right-8 bottom-12 hidden lg:flex items-end gap-4 z-10">
+                {/* Card principal grande */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30, rotate: -4 }}
+                  animate={{ opacity: 1, y: 0, rotate: -4 }}
+                  transition={{ delay: 0.4, duration: 0.6 }}
+                  className="w-52 h-64 rounded-3xl overflow-hidden border-4 border-white/80 shadow-2xl"
+                  style={{ boxShadow: '0 25px 50px rgba(0,0,0,0.4)' }}
+                >
+                  <img src={slide.extraImages[0]} alt="Produto destaque" className="w-full h-full object-cover" />
+                </motion.div>
+                {/* Card menor com rotação oposta */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30, rotate: 5 }}
+                  animate={{ opacity: 1, y: 0, rotate: 5 }}
+                  transition={{ delay: 0.6, duration: 0.6 }}
+                  className="w-40 h-48 rounded-2xl overflow-hidden border-4 border-white/70 shadow-2xl mb-8"
+                  style={{ boxShadow: '0 20px 40px rgba(0,0,0,0.35)' }}
+                >
+                  <img src={slide.extraImages[1]} alt="Produto destaque 2" className="w-full h-full object-cover scale-110" style={{ objectPosition: '60% 40%' }} />
+                </motion.div>
+                {/* Badge flutuante */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.9, type: 'spring', stiffness: 300 }}
+                  className="absolute -top-6 right-24 bg-primary text-primary-foreground px-3 py-2 rounded-2xl text-xs font-bold shadow-lg"
+                >
+                  🍮 Pote 400g
+                </motion.div>
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
 
