@@ -27,7 +27,7 @@ import CartDrawer from '@/components/CartDrawer';
 import ProductCard from '@/components/ProductCard';
 
 // ── REVIEWS ───────────────────────────────────────────
-const reviews = [
+const _reviews = [
   {
     id: 1,
     name: 'Ana Paula Silva',
@@ -138,7 +138,7 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState<'todos' | 'utilidades' | 'doces'>('todos');
   const [copied, setCopied] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
-  const [reviewIndex, setReviewIndex] = useState(0);
+
 
   const displayProducts =
     activeTab === 'todos'
@@ -153,11 +153,7 @@ export default function HomePage() {
     return () => clearInterval(t);
   }, []);
 
-  // Auto-rotate reviews
-  useEffect(() => {
-    const t = setInterval(() => setReviewIndex(i => (i + 1) % reviews.length), 4000);
-    return () => clearInterval(t);
-  }, []);
+
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -728,105 +724,6 @@ export default function HomePage() {
       {/* ═══════════════════════════════════════════
           AVALIAÇÕES
       ════════════════════════════════════════════ */}
-      <section className="py-16 bg-secondary/20">
-        <div className="container mx-auto px-4">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <span className="inline-block px-4 py-1.5 bg-accent/20 text-accent-foreground text-sm font-bold rounded-full mb-3">
-              ⭐ Avaliações Reais
-            </span>
-            <h2
-              className="text-3xl sm:text-4xl font-bold text-foreground"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
-              O Que Nossos Clientes Dizem
-            </h2>
-            <div className="flex items-center justify-center gap-1 mt-3">
-              {[1,2,3,4,5].map(s => <Star key={s} size={20} className="fill-accent text-accent" />)}
-              <span className="ml-2 font-bold text-foreground">4.9</span>
-              <span className="text-muted-foreground text-sm">(+200 avaliações)</span>
-            </div>
-          </motion.div>
-
-          {/* Desktop: Grid | Mobile: carousel-style */}
-          <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
-            {reviews.map((r, i) => (
-              <motion.div
-                key={r.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="bg-card rounded-2xl border border-border p-5 flex flex-col gap-4"
-              >
-                <div className="flex items-start gap-3">
-                  <img
-                    src={r.avatar}
-                    alt={r.name}
-                    className="w-11 h-11 rounded-full object-cover flex-shrink-0"
-                  />
-                  <div>
-                    <p className="font-semibold text-foreground text-sm">{r.name}</p>
-                    <p className="text-xs text-muted-foreground">{r.city}</p>
-                    <div className="flex gap-0.5 mt-1">
-                      {Array.from({ length: r.rating }).map((_, s) => (
-                        <Star key={s} size={12} className="fill-accent text-accent" />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">"{r.comment}"</p>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Mobile: single review with auto-rotate */}
-          <div className="md:hidden max-w-sm mx-auto">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={reviewIndex}
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                transition={{ duration: 0.4 }}
-                className="bg-card rounded-2xl border border-border p-5 flex flex-col gap-4"
-              >
-                <div className="flex items-start gap-3">
-                  <img
-                    src={reviews[reviewIndex].avatar}
-                    alt={reviews[reviewIndex].name}
-                    className="w-11 h-11 rounded-full object-cover"
-                  />
-                  <div>
-                    <p className="font-semibold text-foreground text-sm">{reviews[reviewIndex].name}</p>
-                    <p className="text-xs text-muted-foreground">{reviews[reviewIndex].city}</p>
-                    <div className="flex gap-0.5 mt-1">
-                      {[1,2,3,4,5].map(s => <Star key={s} size={12} className="fill-accent text-accent" />)}
-                    </div>
-                  </div>
-                </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">"{reviews[reviewIndex].comment}"</p>
-              </motion.div>
-            </AnimatePresence>
-            <div className="flex justify-center gap-1.5 mt-4">
-              {reviews.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setReviewIndex(i)}
-                  className={`rounded-full transition-all duration-200 ${
-                    i === reviewIndex ? 'w-5 h-2 bg-primary' : 'w-2 h-2 bg-border'
-                  }`}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ═══════════════════════════════════════════
           CTA FINAL
       ════════════════════════════════════════════ */}
