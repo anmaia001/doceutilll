@@ -51,7 +51,7 @@ export default function Header() {
               className="text-xl font-bold text-foreground"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
-              Casa<span className="text-primary">&</span>Doce
+              Doce<span className="text-primary"> & </span>Útil
             </span>
             <span className="text-xs text-muted-foreground font-normal hidden sm:block">
               Utilidades & Doces Artesanais

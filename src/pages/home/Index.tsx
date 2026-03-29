@@ -104,7 +104,7 @@ const heroSlides = [
   {
     image: 'https://images.unsplash.com/photo-1743684456567-a3d32dbf702e?w=1600&q=85',
     badge: '🏠 Utilidades Premium',
-    title: 'Casa & Doce',
+    title: 'Doce & Útil',
     subtitle: 'Utilidades e doces artesanais\ncom entrega porta a porta',
     cta: 'Ver Utilidades',
     section: 'produtos',
@@ -677,7 +677,7 @@ export default function HomePage() {
                   className="text-2xl font-bold text-background"
                   style={{ fontFamily: "'Playfair Display', serif" }}
                 >
-                  Casa<span className="text-accent">&</span>Doce
+                  Doce<span className="text-accent"> & </span>Útil
                 </span>
               </div>
               <p className="text-background/65 text-sm leading-relaxed max-w-sm mb-5">
@@ -695,7 +695,7 @@ export default function HomePage() {
                   WhatsApp
                 </a>
                 <a
-                  href="https://instagram.com/casaedoce"
+                  href="https://instagram.com/doceeutilrj"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-white/10 hover:bg-white/20 transition-all text-background"
