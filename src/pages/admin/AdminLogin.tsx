@@ -101,20 +101,13 @@ export default function AdminLogin() {
               </Button>
             </form>
 
-            <div className="mt-6 pt-5 border-t border-border">
-              <div className="bg-muted/60 rounded-xl px-4 py-3 mb-4 text-center">
-                <p className="text-xs text-muted-foreground mb-1 font-medium">🔑 Senha padrão de acesso:</p>
-                <p className="text-sm font-bold text-foreground tracking-widest select-all">doceutil@2025</p>
-                <p className="text-xs text-muted-foreground mt-1">Clique na senha acima para selecionar e copiar</p>
-              </div>
-              <div className="text-center">
-                <a
-                  href="/"
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
-                  ← Voltar ao site
-                </a>
-              </div>
+            <div className="mt-6 pt-5 border-t border-border text-center">
+              <a
+                href="/"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                ← Voltar ao site
+              </a>
             </div>
           </div>
         </div>
