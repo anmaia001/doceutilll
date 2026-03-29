@@ -576,9 +576,7 @@ export default function HomePage() {
             >
               {[
                 { icon: <MapPin size={20} />, text: 'Capital e Interior do RJ' },
-                { icon: <Shield size={20} />, text: 'Entrega com Rastreamento' },
                 { icon: <Clock size={20} />, text: 'Prazo: 1 a 5 dias úteis' },
-                { icon: <Heart size={20} />, text: 'Embalagem Especial' },
               ].map((item, i) => (
                 <div
                   key={i}
