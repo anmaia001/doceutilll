@@ -100,19 +100,30 @@ const trustItems = [
 ];
 
 // ── HERO SLIDES ───────────────────────────────────────
+// Imagens rotativas de doces para o 1º slide
+const docesRotativas = [
+  'https://cdn.awsli.com.br/300x300/2885/2885655/produto/381847382/pote-13-bj70n6hhtj.jpg',   // Caixinha Mista
+  'https://cdn.awsli.com.br/300x300/2885/2885655/produto/378729682/pote-6qojycdti3.jpg',       // Doce de Leite Pastoso
+  'https://cdn.awsli.com.br/300x300/2885/2885655/produto/381573112/pote-20-1uk63fah9y.jpg',    // Goiabada Cascão
+  'https://cdn.awsli.com.br/300x300/2885/2885655/produto/382612841/pote-11-udqczbvsrt.png',    // Paçoca Diet
+  'https://cdn.awsli.com.br/300x300/2885/2885655/produto/381571544/pote-4-ka94iyp9zb.jpg',    // Doce de Leite com Chocolate
+  'https://cdn.awsli.com.br/300x300/2885/2885655/produto/382587351/pote-cm2zfakqgd.png',      // Goiabada Cascão Barra
+];
+
 const heroSlides = [
   {
-    image: 'https://images.unsplash.com/photo-1743684456567-a3d32dbf702e?w=1600&q=85',
-    badge: '🏠 Utilidades Premium',
+    image: 'https://images.unsplash.com/photo-1587132137056-bfbf0166836e?w=1600&q=85',
+    badge: '🍮 Doces Artesanais',
     title: 'Doce & Útil',
-    subtitle: 'Utilidades e doces artesanais\ncom entrega porta a porta',
-    cta: 'Ver Utilidades',
+    subtitle: 'Doces artesanais irresistíveis\ncom entrega porta a porta no RJ',
+    cta: 'Ver Doces',
     section: 'produtos',
     overlay: 'from-black/70 via-black/40 to-transparent',
+    rotatingImages: docesRotativas,
   },
   {
-    image: 'https://images.unsplash.com/photo-1566565286951-f81c7ba5619d?w=1600&q=85',
-    badge: '🍫 Doces Artesanais',
+    image: 'https://cdn.awsli.com.br/300x300/2885/2885655/produto/381847382/pote-13-bj70n6hhtj.jpg',
+    badge: '🍫 Caixinha Mista',
     title: 'Sabores que\nEncantam',
     subtitle: 'Brigadeiros, trufas e doces\ngourmet feitos com amor',
     cta: 'Ver Doces',
@@ -120,16 +131,16 @@ const heroSlides = [
     overlay: 'from-black/60 via-black/30 to-transparent',
   },
   {
-    image: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=1600&q=85',
+    image: 'https://cdn.awsli.com.br/300x300/2885/2885655/produto/378729682/pote-6qojycdti3.jpg',
     badge: '⭐ Mais Vendidos',
     title: 'Qualidade que\nVocê Merece',
-    subtitle: 'Os melhores produtos selecionados\npara o seu lar e seu paladar',
+    subtitle: 'Os melhores doces artesanais\npara o seu paladar',
     cta: 'Comprar Agora',
     section: 'produtos',
     overlay: 'from-black/65 via-black/35 to-transparent',
     extraImages: [
-      'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=400&q=80',
-      'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=400&q=80',
+      'https://cdn.awsli.com.br/300x300/2885/2885655/produto/378729682/pote-6qojycdti3.jpg',
+      'https://cdn.awsli.com.br/300x300/2885/2885655/produto/381567013/pote-1-qmsftbexco.jpg',
     ],
   },
 ];
@@ -142,7 +153,7 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState<'todos' | 'utilidades' | 'doces'>('todos');
   const [copied, setCopied] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
-
+  const [rotatingImgIndex, setRotatingImgIndex] = useState(0);
 
   const displayProducts =
     activeTab === 'todos'
@@ -154,6 +165,12 @@ export default function HomePage() {
   // Auto-rotate hero
   useEffect(() => {
     const t = setInterval(() => setHeroIndex(i => (i + 1) % heroSlides.length), 5000);
+    return () => clearInterval(t);
+  }, []);
+
+  // Auto-rotate product images on slide 1
+  useEffect(() => {
+    const t = setInterval(() => setRotatingImgIndex(i => (i + 1) % docesRotativas.length), 2000);
     return () => clearInterval(t);
   }, []);
 
@@ -196,7 +213,47 @@ export default function HomePage() {
             />
             <div className={`absolute inset-0 bg-gradient-to-r ${slide.overlay}`} />
 
-            {/* Imagens sobrepostas do produto */}
+            {/* Imagens rotativas de doces — slide 1 */}
+            {'rotatingImages' in slide && slide.rotatingImages && (
+              <div className="absolute right-8 bottom-12 hidden lg:flex items-end gap-4 z-10">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={rotatingImgIndex}
+                    initial={{ opacity: 0, y: 20, rotate: -4 }}
+                    animate={{ opacity: 1, y: 0, rotate: -4 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.6 }}
+                    className="w-52 h-64 rounded-3xl overflow-hidden border-4 border-white/80 shadow-2xl"
+                    style={{ boxShadow: '0 25px 50px rgba(0,0,0,0.4)' }}
+                  >
+                    <img src={slide.rotatingImages[rotatingImgIndex]} alt="Produto doce" className="w-full h-full object-cover" />
+                  </motion.div>
+                </AnimatePresence>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`b_${rotatingImgIndex}`}
+                    initial={{ opacity: 0, y: 20, rotate: 5 }}
+                    animate={{ opacity: 1, y: 0, rotate: 5 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.6, delay: 0.15 }}
+                    className="w-40 h-48 rounded-2xl overflow-hidden border-4 border-white/70 shadow-2xl mb-8"
+                    style={{ boxShadow: '0 20px 40px rgba(0,0,0,0.35)' }}
+                  >
+                    <img src={slide.rotatingImages[(rotatingImgIndex + 1) % slide.rotatingImages.length]} alt="Produto doce 2" className="w-full h-full object-cover" />
+                  </motion.div>
+                </AnimatePresence>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.5, type: 'spring', stiffness: 300 }}
+                  className="absolute -top-6 right-24 bg-primary text-primary-foreground px-3 py-2 rounded-2xl text-xs font-bold shadow-lg"
+                >
+                  🍮 Doces Artesanais
+                </motion.div>
+              </div>
+            )}
+
+            {/* Imagens sobrepostas do produto — slide 3 */}
             {'extraImages' in slide && slide.extraImages && (
               <div className="absolute right-8 bottom-12 hidden lg:flex items-end gap-4 z-10">
                 {/* Card principal grande */}

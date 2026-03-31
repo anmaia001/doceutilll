@@ -1,21 +1,60 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingBag, Trash2, Plus, Minus, MessageCircle, User, MapPin, ChevronRight } from 'lucide-react';
+import { X, ShoppingBag, Trash2, Plus, Minus, MessageCircle, User, MapPin, Phone, ChevronRight } from 'lucide-react';
 import { useCart } from '@/hooks/useCart';
 import { formatCurrency, buildWhatsAppMessage, openWhatsApp, PIX_KEY, PIX_FAVORECIDO } from '@/lib/whatsapp';
+import { useCustomers } from '@/hooks/useCustomers';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 export default function CartDrawer() {
-  const { items, isOpen, closeCart, updateQuantity, removeItem, totalPrice } = useCart();
+  const { items, isOpen, closeCart, updateQuantity, removeItem, totalPrice, clearCart } = useCart();
+  const { addCustomer, customers, addInteraction } = useCustomers();
   const [customerName, setCustomerName] = useState('');
   const [address, setAddress] = useState('');
+  const [phone, setPhone] = useState('');
   const [step, setStep] = useState<'cart' | 'checkout'>('cart');
 
   const total = totalPrice();
 
   const handleSendOrder = () => {
     if (!customerName.trim() || !address.trim()) return;
+
+    // Cadastrar ou atualizar cliente no CRM automaticamente
+    const productNames = items.map(i => `${i.quantity}x ${i.product.name}`).join(', ');
+    const existing = customers.find(
+      c => c.name.toLowerCase() === customerName.trim().toLowerCase() ||
+           (phone.trim() && c.phone === phone.trim())
+    );
+
+    if (existing) {
+      // Cliente já existe: apenas registra nova interação
+      addInteraction(existing.id, {
+        type: 'pedido',
+        date: new Date().toISOString(),
+        note: `Pedido via site. Endereço: ${address}`,
+        products: productNames,
+        value: total,
+      });
+    } else {
+      // Novo cliente: cadastra e registra pedido
+      const newId = addCustomer({
+        name: customerName.trim(),
+        phone: phone.trim() || '',
+        address: address.trim(),
+        city: '',
+        email: '',
+        note: 'Cadastrado automaticamente via carrinho',
+      });
+      addInteraction(newId, {
+        type: 'pedido',
+        date: new Date().toISOString(),
+        note: `Primeiro pedido via site. Endereço: ${address}`,
+        products: productNames,
+        value: total,
+      });
+    }
+
     const message = buildWhatsAppMessage(items, customerName, address);
     openWhatsApp(message);
   };
@@ -158,6 +197,17 @@ export default function CartDrawer() {
                         placeholder="Digite seu nome completo"
                         value={customerName}
                         onChange={e => setCustomerName(e.target.value)}
+                        className="bg-background"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-semibold text-foreground mb-1.5 flex items-center gap-1.5">
+                        <Phone size={14} className="text-primary" /> WhatsApp / Telefone
+                      </label>
+                      <Input
+                        placeholder="(24) 99999-9999"
+                        value={phone}
+                        onChange={e => setPhone(e.target.value)}
                         className="bg-background"
                       />
                     </div>

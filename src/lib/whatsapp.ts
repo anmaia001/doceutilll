@@ -1,7 +1,7 @@
 import { CartItem } from '@/hooks/useCart';
 
 const WHATSAPP_NUMBER = '5524992575555';
-const PIX_KEY = '5524992575555';
+const PIX_KEY = '2499257555';
 const PIX_FAVORECIDO = 'Alexandre Pereira Maia';
 
 export const formatCurrency = (value: number): string =>

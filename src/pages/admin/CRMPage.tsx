@@ -4,10 +4,10 @@ import {
   Users, Plus, Search, X, Phone, MapPin, Mail, FileText,
   MessageCircle, Trash2, Pencil, ChevronDown, ChevronUp,
   Calendar, DollarSign, Tag, CheckCircle, AlertTriangle,
-  Clock, ShoppingBag, Star, Lightbulb,
+  Clock, ShoppingBag, Star, Lightbulb, Send,
 } from 'lucide-react';
 import { useCustomers, Customer, Interaction, InteractionType, INTERACTION_LABELS } from '@/hooks/useCustomers';
-import { formatCurrency } from '@/lib/whatsapp';
+import { formatCurrency, WHATSAPP_NUMBER } from '@/lib/whatsapp';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -366,6 +366,19 @@ function CustomerCard({
           >
             <Plus size={15} />
           </button>
+          {customer.phone && (
+            <button
+              onClick={() => {
+                const phone = customer.phone.replace(/\D/g, '');
+                const num = phone.startsWith('55') ? phone : `55${phone}`;
+                window.open(`https://wa.me/${num}`, '_blank');
+              }}
+              title="Enviar mensagem WhatsApp"
+              className="p-2 rounded-xl hover:bg-green-100 hover:text-green-600 transition-colors text-muted-foreground"
+            >
+              <MessageCircle size={15} />
+            </button>
+          )}
           <button onClick={onEdit} className="p-2 rounded-xl hover:bg-muted transition-colors text-muted-foreground hover:text-foreground">
             <Pencil size={15} />
           </button>
