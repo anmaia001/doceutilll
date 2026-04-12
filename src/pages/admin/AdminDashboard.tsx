@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   ShoppingBag, LogOut, Home, Package, Users, Heart,
@@ -13,9 +13,11 @@ type Tab = 'products' | 'crm';
 
 export default function AdminDashboard() {
   const { logout } = useAuth();
-  const { products } = useProducts();
-  const { customers } = useCustomers();
+  const { products, init } = useProducts();
+  const { customers, loadCustomers } = useCustomers();
   const [activeTab, setActiveTab] = useState<Tab>('products');
+
+  useEffect(() => { init(); loadCustomers(); }, []);
 
   const totalUtilidades = products.filter(p => p.category === 'utilidades').length;
   const totalDoces = products.filter(p => p.category === 'doces').length;

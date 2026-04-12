@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { supabase } from '@/lib/supabase';
 
 export type InteractionType =
   | 'oferta'
@@ -21,11 +21,11 @@ export const INTERACTION_LABELS: Record<InteractionType, string> = {
 export interface Interaction {
   id: string;
   type: InteractionType;
-  date: string;           // ISO string
+  date: string;
   note: string;
-  products?: string;      // produtos mencionados
-  value?: number;         // valor envolvido (opcional)
-  followUp?: string;      // data de retorno (opcional)
+  products?: string;
+  value?: number;
+  followUp?: string;
 }
 
 export interface Customer {
@@ -40,8 +40,30 @@ export interface Customer {
   interactions: Interaction[];
 }
 
+// Mapeia order do Supabase para Customer local
+const mapOrderToCustomer = (order: Record<string, unknown>): Customer => ({
+  id: String(order.id),
+  name: String(order.customer_name ?? ''),
+  phone: String(order.customer_phone ?? ''),
+  address: order.customer_address ? `${order.customer_address}, ${order.customer_neighborhood ?? ''}, ${order.customer_city ?? ''}` : '',
+  city: String(order.customer_city ?? ''),
+  email: '',
+  note: order.customer_observations ? String(order.customer_observations) : '',
+  createdAt: String(order.created_at ?? new Date().toISOString()),
+  interactions: [{
+    id: `i_${order.id}`,
+    type: 'pedido' as InteractionType,
+    date: String(order.created_at ?? new Date().toISOString()),
+    note: `Pedido via site. Status: ${order.status}. Pagamento: ${order.payment_method}`,
+    value: Number(order.total ?? 0),
+  }],
+});
+
 interface CustomersStore {
   customers: Customer[];
+  loading: boolean;
+  initialized: boolean;
+  loadCustomers: () => Promise<void>;
   addCustomer: (data: Omit<Customer, 'id' | 'createdAt' | 'interactions'>) => string;
   updateCustomer: (id: string, data: Partial<Omit<Customer, 'id' | 'interactions'>>) => void;
   deleteCustomer: (id: string) => void;
@@ -50,71 +72,80 @@ interface CustomersStore {
   deleteInteraction: (customerId: string, interactionId: string) => void;
 }
 
-export const useCustomers = create<CustomersStore>()(
-  persist(
-    (set) => ({
-      customers: [] as Customer[],
+export const useCustomers = create<CustomersStore>()((set, get) => ({
+  customers: [],
+  loading: false,
+  initialized: false,
 
-      addCustomer: (data) => {
-        const id = `c_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-        const newCustomer: Customer = {
-          id,
-          ...data,
-          createdAt: new Date().toISOString(),
-          interactions: [],
-        };
-        set(state => ({ customers: [...state.customers, newCustomer] }));
-        return id;
-      },
+  loadCustomers: async () => {
+    if (get().initialized) return;
+    set({ loading: true });
+    try {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-      updateCustomer: (id, data) => {
-        set(state => ({
-          customers: state.customers.map(c =>
-            c.id === id ? { ...c, ...data } : c
-          ),
-        }));
-      },
+      if (!error && data && data.length > 0) {
+        set({ customers: data.map(mapOrderToCustomer), initialized: true, loading: false });
+      } else {
+        set({ initialized: true, loading: false });
+      }
+    } catch {
+      set({ initialized: true, loading: false });
+    }
+  },
 
-      deleteCustomer: (id) => {
-        set(state => ({ customers: state.customers.filter(c => c.id !== id) }));
-      },
+  addCustomer: (data) => {
+    const id = `c_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    const newCustomer: Customer = {
+      id,
+      ...data,
+      createdAt: new Date().toISOString(),
+      interactions: [],
+    };
+    set(state => ({ customers: [...state.customers, newCustomer] }));
+    return id;
+  },
 
-      addInteraction: (customerId, data) => {
-        const id = `i_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-        set(state => ({
-          customers: state.customers.map(c =>
-            c.id === customerId
-              ? { ...c, interactions: [{ id, ...data }, ...c.interactions] }
-              : c
-          ),
-        }));
-      },
+  updateCustomer: (id, data) => {
+    set(state => ({
+      customers: state.customers.map(c => c.id === id ? { ...c, ...data } : c),
+    }));
+  },
 
-      updateInteraction: (customerId, interactionId, data) => {
-        set(state => ({
-          customers: state.customers.map(c =>
-            c.id === customerId
-              ? {
-                  ...c,
-                  interactions: c.interactions.map(i =>
-                    i.id === interactionId ? { ...i, ...data } : i
-                  ),
-                }
-              : c
-          ),
-        }));
-      },
+  deleteCustomer: (id) => {
+    set(state => ({ customers: state.customers.filter(c => c.id !== id) }));
+  },
 
-      deleteInteraction: (customerId, interactionId) => {
-        set(state => ({
-          customers: state.customers.map(c =>
-            c.id === customerId
-              ? { ...c, interactions: c.interactions.filter(i => i.id !== interactionId) }
-              : c
-          ),
-        }));
-      },
-    }),
-    { name: 'doceutil-customers' }
-  )
-);
+  addInteraction: (customerId, data) => {
+    const id = `i_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    set(state => ({
+      customers: state.customers.map(c =>
+        c.id === customerId
+          ? { ...c, interactions: [{ id, ...data }, ...c.interactions] }
+          : c
+      ),
+    }));
+  },
+
+  updateInteraction: (customerId, interactionId, data) => {
+    set(state => ({
+      customers: state.customers.map(c =>
+        c.id === customerId
+          ? { ...c, interactions: c.interactions.map(i => i.id === interactionId ? { ...i, ...data } : i) }
+          : c
+      ),
+    }));
+  },
+
+  deleteInteraction: (customerId, interactionId) => {
+    set(state => ({
+      customers: state.customers.map(c =>
+        c.id === customerId
+          ? { ...c, interactions: c.interactions.filter(i => i.id !== interactionId) }
+          : c
+      ),
+    }));
+  },
+}));

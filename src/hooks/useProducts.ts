@@ -1,59 +1,108 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { supabase } from '@/lib/supabase';
 import { Product, products as defaultProducts } from '@/data/products';
 
 interface ProductsStore {
   products: Product[];
   initialized: boolean;
-  init: () => void;
-  addProduct: (product: Omit<Product, 'id'>) => void;
-  updateProduct: (id: string, product: Partial<Product>) => void;
-  deleteProduct: (id: string) => void;
+  loading: boolean;
+  init: () => Promise<void>;
+  addProduct: (product: Omit<Product, 'id'>) => Promise<void>;
+  updateProduct: (id: string, product: Partial<Product>) => Promise<void>;
+  deleteProduct: (id: string) => Promise<void>;
   resetToDefault: () => void;
 }
 
-export const useProducts = create<ProductsStore>()(
-  persist(
-    (set, get) => ({
-      products: defaultProducts,
-      initialized: false,
+// Mapeia produto do Supabase para o formato local
+const mapSupabaseProduct = (p: Record<string, unknown>): Product => ({
+  id: String(p.id),
+  name: String(p.name),
+  description: String(p.description ?? ''),
+  price: Number(p.price),
+  image: String(p.image ?? ''),
+  category: (p.category as 'utilidades' | 'doces') ?? 'doces',
+  badge: p.badge ? String(p.badge) : undefined,
+  featured: Boolean(p.featured),
+});
 
-      init: () => {
-        // Só inicializa com padrão se NUNCA foi inicializado antes
-        // Se já foi inicializado, mantém o que está salvo no localStorage
-        if (!get().initialized) {
-          set({ products: defaultProducts, initialized: true });
-        }
-        // Se já está inicializado, não faz nada — preserva as alterações do admin
-      },
+export const useProducts = create<ProductsStore>()((set, get) => ({
+  products: defaultProducts,
+  initialized: false,
+  loading: false,
 
-      addProduct: (productData) => {
-        const id = `p_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
-        const newProduct: Product = { id, ...productData };
-        set(state => ({ products: [...state.products, newProduct] }));
-      },
+  init: async () => {
+    if (get().initialized) return;
+    set({ loading: true });
+    try {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: true });
 
-      updateProduct: (id, data) => {
-        set(state => ({
-          products: state.products.map(p => p.id === id ? { ...p, ...data } : p),
-        }));
-      },
-
-      deleteProduct: (id) => {
-        set(state => ({ products: state.products.filter(p => p.id !== id) }));
-      },
-
-      resetToDefault: () => {
-        set({ products: defaultProducts, initialized: true });
-      },
-    }),
-    {
-      name: 'doceutil-products',
-      // Persiste todos os campos incluindo 'initialized'
-      partialize: (state) => ({
-        products: state.products,
-        initialized: state.initialized,
-      }),
+      if (error || !data || data.length === 0) {
+        // Fallback para produtos locais se Supabase falhar
+        set({ products: defaultProducts, initialized: true, loading: false });
+        return;
+      }
+      set({ products: data.map(mapSupabaseProduct), initialized: true, loading: false });
+    } catch {
+      set({ products: defaultProducts, initialized: true, loading: false });
     }
-  )
-);
+  },
+
+  addProduct: async (productData) => {
+    const { data, error } = await supabase
+      .from('products')
+      .insert([{
+        name: productData.name,
+        description: productData.description,
+        price: productData.price,
+        image: productData.image,
+        category: productData.category,
+        badge: productData.badge ?? null,
+        featured: productData.featured ?? false,
+      }])
+      .select()
+      .single();
+
+    if (!error && data) {
+      set(state => ({ products: [...state.products, mapSupabaseProduct(data)] }));
+    }
+  },
+
+  updateProduct: async (id, productData) => {
+    const { error } = await supabase
+      .from('products')
+      .update({
+        ...(productData.name && { name: productData.name }),
+        ...(productData.description && { description: productData.description }),
+        ...(productData.price !== undefined && { price: productData.price }),
+        ...(productData.image && { image: productData.image }),
+        ...(productData.category && { category: productData.category }),
+        ...(productData.badge !== undefined && { badge: productData.badge ?? null }),
+        ...(productData.featured !== undefined && { featured: productData.featured }),
+      })
+      .eq('id', id);
+
+    if (!error) {
+      set(state => ({
+        products: state.products.map(p => p.id === id ? { ...p, ...productData } : p),
+      }));
+    }
+  },
+
+  deleteProduct: async (id) => {
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', id);
+
+    if (!error) {
+      set(state => ({ products: state.products.filter(p => p.id !== id) }));
+    }
+  },
+
+  resetToDefault: () => {
+    set({ products: defaultProducts });
+  },
+}));

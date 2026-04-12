@@ -123,7 +123,8 @@ const heroSlides = [
 ];
 
 export default function HomePage() {
-  const { products } = useProducts();
+  const { products, init } = useProducts();
+  useEffect(() => { init(); }, []);
   const utilidades = products.filter(p => p.category === 'utilidades');
   const doces = products.filter(p => p.category === 'doces');
   const { openCart, totalItems } = useCart();
