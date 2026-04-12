@@ -113,35 +113,12 @@ const docesRotativas = [
 const heroSlides = [
   {
     image: '/queijo-frescal.png',
-    badge: '🍮 Doces Artesanais',
+    badge: '🧀 Queijo Minas Frescal',
     title: 'Doce & Útil',
-    subtitle: 'Doces artesanais irresistíveis\ncom entrega porta a porta no RJ',
-    cta: 'Ver Doces',
-    section: 'produtos',
-    overlay: 'from-black/70 via-black/40 to-transparent',
-    rotatingImages: docesRotativas,
-  },
-  {
-    image: 'https://cdn.awsli.com.br/300x300/2885/2885655/produto/381847382/pote-13-bj70n6hhtj.jpg',
-    badge: '🍫 Caixinha Mista',
-    title: 'Sabores que\nEncantam',
-    subtitle: 'Brigadeiros, trufas e doces\ngourmet feitos com amor',
-    cta: 'Ver Doces',
+    subtitle: 'Doces artesanais e queijos selecionados\ncom entrega porta a porta no RJ',
+    cta: 'Ver Produtos',
     section: 'produtos',
     overlay: 'from-black/60 via-black/30 to-transparent',
-  },
-  {
-    image: 'https://cdn.awsli.com.br/300x300/2885/2885655/produto/378729682/pote-6qojycdti3.jpg',
-    badge: '⭐ Mais Vendidos',
-    title: 'Qualidade que\nVocê Merece',
-    subtitle: 'Os melhores doces artesanais\npara o seu paladar',
-    cta: 'Comprar Agora',
-    section: 'produtos',
-    overlay: 'from-black/65 via-black/35 to-transparent',
-    extraImages: [
-      'https://cdn.awsli.com.br/300x300/2885/2885655/produto/378729682/pote-6qojycdti3.jpg',
-      'https://cdn.awsli.com.br/300x300/2885/2885655/produto/381567013/pote-1-qmsftbexco.jpg',
-    ],
   },
 ];
 
