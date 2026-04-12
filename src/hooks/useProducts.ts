@@ -19,9 +19,12 @@ export const useProducts = create<ProductsStore>()(
       initialized: false,
 
       init: () => {
+        // Só inicializa com padrão se NUNCA foi inicializado antes
+        // Se já foi inicializado, mantém o que está salvo no localStorage
         if (!get().initialized) {
           set({ products: defaultProducts, initialized: true });
         }
+        // Se já está inicializado, não faz nada — preserva as alterações do admin
       },
 
       addProduct: (productData) => {
@@ -41,11 +44,16 @@ export const useProducts = create<ProductsStore>()(
       },
 
       resetToDefault: () => {
-        set({ products: defaultProducts });
+        set({ products: defaultProducts, initialized: true });
       },
     }),
     {
       name: 'doceutil-products',
+      // Persiste todos os campos incluindo 'initialized'
+      partialize: (state) => ({
+        products: state.products,
+        initialized: state.initialized,
+      }),
     }
   )
 );
