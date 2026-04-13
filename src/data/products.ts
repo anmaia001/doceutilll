@@ -316,6 +316,18 @@ export const products: Product[] = [
     image: 'https://cdn.awsli.com.br/300x300/2885/2885655/produto/383281300/pote-14-at90gx75xv.png',
     category: 'doces',
   },
+
+  // === LANÇAMENTO ===
+  {
+    id: 'lc1',
+    name: 'Bala de Doce de Leite 300g',
+    description: 'Bala artesanal de doce de leite em embalagem de 300g. Sabor suave e cremoso do autêntico doce de leite. Perfeita para presentear ou saborear.',
+    price: 22.00,
+    image: 'https://cdn.awsli.com.br/300x300/2885/2885655/produto/383282280/pote-15-awedcof9ad.png',
+    category: 'doces',
+    badge: 'Lançamento',
+    featured: true,
+  },
 ];
 
 export const featuredProducts = products.filter(p => p.featured);
