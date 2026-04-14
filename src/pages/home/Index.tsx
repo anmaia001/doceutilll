@@ -386,8 +386,8 @@ export default function HomePage() {
             <div className="inline-flex bg-card rounded-2xl p-1.5 border border-border gap-1">
               {[
                 { key: 'todos', label: '🛒 Todos', count: products.length },
-                { key: 'utilidades', label: '🏠 Utilidades', count: utilidades.length },
                 { key: 'doces', label: '🍫 Doces', count: doces.length },
+                { key: 'utilidades', label: '🏠 Utilidades', count: utilidades.length },
               ].map(tab => (
                 <button
                   key={tab.key}
@@ -409,7 +409,32 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Utilidades Section */}
+          {/* Doces Section — primeiro */}
+          {(activeTab === 'todos' || activeTab === 'doces') && (
+            <div className="mb-12">
+              {activeTab === 'todos' && (
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <Heart size={16} className="text-primary" />
+                  </div>
+                  <h3
+                    className="text-xl font-bold text-foreground"
+                    style={{ fontFamily: "'Playfair Display', serif" }}
+                  >
+                    Doces Artesanais
+                  </h3>
+                  <div className="flex-1 h-px bg-border" />
+                </div>
+              )}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                {(activeTab === 'todos' ? doces : displayProducts).map(p => (
+                  <ProductCard key={p.id} product={p} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Utilidades Section — depois */}
           {(activeTab === 'todos' || activeTab === 'utilidades') && (
             <div className="mb-12">
               {activeTab === 'todos' && (
@@ -428,31 +453,6 @@ export default function HomePage() {
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {(activeTab === 'todos' ? utilidades : displayProducts).map(p => (
-                  <ProductCard key={p.id} product={p} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Doces Section */}
-          {(activeTab === 'todos' || activeTab === 'doces') && (
-            <div>
-              {activeTab === 'todos' && (
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Heart size={16} className="text-primary" />
-                  </div>
-                  <h3
-                    className="text-xl font-bold text-foreground"
-                    style={{ fontFamily: "'Playfair Display', serif" }}
-                  >
-                    Doces Artesanais
-                  </h3>
-                  <div className="flex-1 h-px bg-border" />
-                </div>
-              )}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                {(activeTab === 'todos' ? doces : displayProducts).map(p => (
                   <ProductCard key={p.id} product={p} />
                 ))}
               </div>
